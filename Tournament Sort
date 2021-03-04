@@ -56,7 +56,10 @@ template <class Type> void TournamentSort(Type a[], int n)
   a[n-1]=tree[0].data;
 }
 
+
+
 //revise the Tournament Tree. After deleting last winner, the lastest winner need to be found
+//every time we find winner, the changes happen on the tree where the smallest one locate. That's the reason why we just need to revise a part of tree.
 template<class Type> void UpdateTree(DataNode<Type> *tree, int i)
 {
   if (i%2==0) tree[(i-1)/2]=tree[i-1];      
@@ -68,7 +71,11 @@ template<class Type> void UpdateTree(DataNode<Type> *tree, int i)
     if(i%2==0) j=i-1;                         // find the opponent is on the right or on the left
     else j=i+1;
     if(! tree[i].active || ! tree[j].active)
-      if ( tree[i].active) tree[(i-1)/2]=tree[i];
-      else tree[(i-1)/2]=tree[j];             // 
+      if (tree[i].active) tree[(i-1)/2]=tree[i];
+      else tree[(i-1)/2]=tree[j];             // send the non-empty point to its parent
+    else
+      if (tree[i].data<tree[j].data) tree[(i-1)/2]=tree[i];
+      else tree[(i-1)/2]=tree[j];             // winner( smaller one) to its parent
+    i=(i-1)/2;                                // i to the upper row.
   }
 }
