@@ -16,7 +16,54 @@ template<class Type> void merge(datalist<Type> &initList, datalist<Type> &merged
   }
 }
 
-template<class Type> void MergePass(datalist<Type> &initList, datalist<Type> &mergedList, const int len)
+template<class Type> void MergePass(datalist<Type> &initList, datalist<Type> &mergedList, const int len)    // merge once
 {
+    int i=0;
+    while( i+2*len<=initList.CurrentSize-1)                             // two lists with the length of len merge into an ordered list
+    {
+      merge(initList, mergedList, i, i+len-1, i+2*len-1);
+      i+=2*len;
+    }
+    if( i+len<=initList.CurrentSize-1)                                  // if only one list is with the length of len, do one more merging
+      merge(initList, mergedList, i, i+len-1, initList.CurrentSize-1);
+    else  for( int j=i; j<=initList.CurrentSize-1; j++) mergedList.Vector[j]=initList.Vector[j];    // copy the rest of list which cannot do merging
+}
+
+template<class Type> void MergeSort(datalist<Type> &list)               // sort in order of rising key
+{
+  datalist<Type> &templist(list.MaxSize);
+  int len=1;
+  while(len<list.CurrentSize)
+  {
+    MergePass(list, tempList, len); len*=2;
+    MergePass(tempList, list, len); len*=2;     // transfer tempList to list
+  }
+  delete []tempList;
+}
+
+
+
+// Recursive merge sort
+// two ordered lists start with start1 and start2. Merge two into one and then return the beginning of it.
+// At first, set every list.Vector[i].link=0, which means every ListNode is independent.
+template<class Type> int ListMerge(staticlinklist<Type> &list, const int start1, const int start2)
+{
+  int k=0, i=start1, j=start2;                                // k is a pointer used as a storage, start1 and start2 pointers are used to detect
+  while (i && j)                                              // when two lists have not been in the end, do a comparison
+    if(list.Vector[i].key<=list.Vector[j].key)
+      {list.Vector[k].link=i; k=i; i=list.Vector[i].link}
+    else {list.Vector[k].link=j; k=j; j=list.Vector[j].link}
+    
+  if (!i) list.Vector[k].link=j;                              // when one of them is in the end, connect another one to the result
+  else list.Vector[k].link=i;
   
+  return list.Vector[0].link;
+}
+
+// From list.Vector[left] to list.Vector[right], sort in order of key
+template<class Type> int rMergeSort(staticlinklist<Type> &list, const int left, const int right)
+{
+  if(left>=right) return left;
+  int middle=(left+right)/2;
+  return ListMerge(list, rMergeSort(list, left, middle), rMergeSort(list, middle+1,right));
 }
