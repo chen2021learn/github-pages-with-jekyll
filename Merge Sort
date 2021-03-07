@@ -1,0 +1,22 @@
+// Iterative merge sort
+// initList.Vector[l..m] and initList.Vector[m+1..n] are in order. Merge them into an ordered list mergedList.Vector[l..n]
+
+template<class Type> void merge(datalist<Type> &initList, datalist<Type> &mergedList, const int i, const int m, const int n)
+{
+  int i=l, j=m+1, k=l;          // k is a pointer used as a storage, i and j are used to detect
+  while( i<=m && j<=n)
+  {
+    if(initList.Vector[i].getKey()<initList.Vector[j].getKey())
+    {mergedList.Vector[k]=initList.Vector[i]; i++; k++;}
+    else {mergedList.Vector[k]=initList.Vector[j]; j++; k++;}
+    
+    if(i<=m)
+      for (int n1=k,n2=i; n1<=n && n2<=m; n1++, n2++) mergedList.Vector[n1]=initList.Vector[n2];
+      else for (int n1=k,n2=j; n1<=n && n2<=n; n1++, n2++) mergedList.Vector[n1]=initList.Vector[n2];
+  }
+}
+
+template<class Type> void MergePass(datalist<Type> &initList, datalist<Type> &mergedList, const int len)
+{
+  
+}
